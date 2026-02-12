@@ -31,13 +31,13 @@ To provide a meaningful performance baseline, the fine-tuned ViT model is compar
 
 ### High-Level Architecture
 
-<img src="./images/architecture.png" alt="ViT Architecture" width="850">
+<img src="./figures/architecture.png" alt="ViT Architecture" width="850">
 
 ---
 
 ### Transformer Layers and Equations
 
-<img src="./images/equations.png" alt="ViT Layers and Equations" width="850">
+<img src="./figures/equations.png" alt="ViT Layers and Equations" width="850">
 
 ---
 
@@ -69,6 +69,41 @@ The following components were implemented **from scratch** to ensure a deep unde
 **Note:**  
 The **Multi-Head Self-Attention (MSA)** operation internally uses the built-in PyTorch attention layer, while the surrounding transformer structure and data flow are implemented manually.
 
-### Results summary
+### Results
 
-**\_** ||||| **\_\_**
+#### Performance Comparison
+
+![Model Comparison](./figures/model_comparison.png)
+
+| Model                      | Params (M) | Size (MB) | Val Acc (%) | Val Loss | Best Epoch | Training Time (m) |
+| -------------------------- | ---------- | --------- | ----------- | -------- | ---------- | ----------------- |
+| ViT (Scratch)              | 85.81      | 327.33    | 18.40       | 2.2108   | 7          | 12                |
+| ViT (Transfer)             | 85.81      | 327.33    | 89.49       | 0.3665   | 10         | 8                 |
+| EfficientNet-B2 (Transfer) | 7.72       | 29.69     | 79.38       | 0.7192   | 12         | 2                 |
+
+_Note: Metrics reported from the epoch with lowest validation loss_
+
+#### Key Findings
+
+- **Small data limitation**: Training ViT from scratch fails on small datasets (only 18.40%)
+- **Transfer learning is essential**: ViT accuracy improved from 18.40% → 89.49% using pretrained weights
+- **ViT outperforms EfficientNet-B2**: 89.49% vs 79.38% validation accuracy
+- **Training efficiency**: EfficientNet-B2 trains faster (2 min) but achieves lower accuracy
+- **Model Size**: ViT is significantly larger (x11) than efficientNetB2
+
+<details>
+<summary><b>Individual Training Curves</b></summary>
+
+### ViT (Scratch)
+
+![ViT Scratch](./figures/vit_from_scratch.png)
+
+### ViT (Transfer Learning)
+
+![ViT Transfer](./figures/vit_transfer_learning.png)
+
+### EfficientNet-B2 (Transfer Learning)
+
+![EfficientNet-B2](./figures/efficientb2_transfer_learning.png)
+
+</details>

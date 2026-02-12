@@ -176,19 +176,37 @@ def train(
             results["val_loss"].append(val_loss)
             results["val_acc"].append(val_acc)
 
+            # --- Get current LR (before scheduler update) ---
+            current_lr = optimizer.param_groups[0]['lr']
+            
             # --- Logging ---
             writer.add_scalar("Loss/train", train_loss, epoch)
             writer.add_scalar("Loss/val", val_loss, epoch)
             writer.add_scalar("Accuracy/train", train_acc, epoch)
             writer.add_scalar("Accuracy/val", val_acc, epoch)
+            writer.add_scalar("Learning_Rate", current_lr, epoch)
             
             # --- Printing ---
             print(
+                f"{CYAN}Epoch [{epoch + 1}/{epochs}]{RESET} | "
+                f"{CYAN}LR:{RESET} {YELLOW}{current_lr:.6f}{RESET} | "
                 f"{CYAN}Train Loss:{RESET} {YELLOW}{train_loss:.4f}{RESET} | "
                 f"{CYAN}Val Loss:{RESET} {YELLOW}{val_loss:.4f}{RESET} | "
                 f"{CYAN}Train Acc:{RESET} {GREEN}{train_acc:.2f}%{RESET} | "
                 f"{CYAN}Val Acc:{RESET} {GREEN}{val_acc:.2f}%{RESET}"
             )
+
+            # --- Scheduler Step (after logging the LR used this epoch) ---
+            if scheduler:
+                if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                    scheduler.step(val_loss)
+                else:
+                    scheduler.step()
+
+            # --- Check if Best ---
+            is_best = val_loss < best_val_loss
+            if is_best:
+                best_val_loss = val_loss
 
             # --- Construct State Dict ---
             current_state = {
@@ -204,8 +222,7 @@ def train(
             save_checkpoint(current_state, path_last)
 
             # --- Save "Best" ---
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
+            if is_best:
                 print(f"{GREEN}>>> Best model updated{RESET}")
                 save_checkpoint(current_state, path_best)
             
@@ -215,22 +232,7 @@ def train(
             print() 
 
     except KeyboardInterrupt:
-        print(f"\n{YELLOW}Training interrupted by user. Saving state to {path_last}...{RESET}")
-        
-        # --- RE-ADDED SAFETY SAVE ---
-        current_state = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
-            'best_val_loss': best_val_loss,
-            'results': results
-        }
-        save_checkpoint(current_state, path_last)
-        with open(path_results, "w") as f:
-            json.dump(results, f, indent=4)
-        # ----------------------------
-        
+        print(f"\n{YELLOW}Training interrupted by user. Last checkpoint already saved.{RESET}")
         writer.close()
         sys.exit(0)
     

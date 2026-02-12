@@ -156,6 +156,73 @@ def plot_loss_curves(results: Dict[str, List[float]], save_path: Optional[str] =
     plt.show()
 
 
+def plot_model_comparison(results_dict: Dict[str, Dict[str, List[float]]], 
+                         save_path: Optional[str] = None) -> None:
+    """
+    Creates a comparative visualization of multiple models' validation performance.
+    
+    Args:
+        results_dict (Dict[str, Dict]): Dictionary mapping model names to their results:
+            {
+                'ViT (Scratch)': {'train_loss': [...], 'val_loss': [...], ...},
+                'ViT (Transfer)': {'train_loss': [...], 'val_loss': [...], ...},
+                ...
+            }
+        save_path (Optional[str]): Optional path to save the comparison figure.
+    """
+    
+    # Define colors and markers for visual distinction
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+    markers = ['o', 's', '^', 'D', 'v']
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+    
+    # Plot validation loss comparison
+    for idx, (model_name, results) in enumerate(results_dict.items()):
+        epochs = range(1, len(results['val_loss']) + 1)
+        ax1.plot(epochs, results['val_loss'], 
+                label=model_name, 
+                marker=markers[idx % len(markers)],
+                color=colors[idx % len(colors)],
+                linewidth=2,
+                markersize=6,
+                alpha=0.8)
+    
+    ax1.set_title('Validation Loss Comparison', fontsize=14, fontweight='bold')
+    ax1.set_xlabel('Epoch', fontsize=12)
+    ax1.set_ylabel('Loss', fontsize=12)
+    ax1.legend(fontsize=11, loc='best')
+    ax1.grid(True, alpha=0.3, linestyle='--')
+    
+    # Plot validation accuracy comparison
+    for idx, (model_name, results) in enumerate(results_dict.items()):
+        epochs = range(1, len(results['val_acc']) + 1)
+        ax2.plot(epochs, results['val_acc'], 
+                label=model_name,
+                marker=markers[idx % len(markers)],
+                color=colors[idx % len(colors)],
+                linewidth=2,
+                markersize=6,
+                alpha=0.8)
+    
+    ax2.set_title('Validation Accuracy Comparison', fontsize=14, fontweight='bold')
+    ax2.set_xlabel('Epoch', fontsize=12)
+    ax2.set_ylabel('Accuracy (%)', fontsize=12)
+    ax2.legend(fontsize=11, loc='best')
+    ax2.grid(True, alpha=0.3, linestyle='--')
+    
+    plt.suptitle('Model Performance Comparison on FoodVision-Mini', 
+                 fontsize=16, fontweight='bold', y=1.00)
+    plt.tight_layout()
+    
+    # Save if path provided
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"Comparison figure saved to {save_path}")
+    
+    plt.show()
+
+
 def make_predictions_grid(test_dir : str | Path,
                            model: torch.nn.Module, 
                            transform: transforms.Compose, 

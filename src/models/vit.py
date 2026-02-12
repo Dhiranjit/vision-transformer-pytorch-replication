@@ -213,8 +213,6 @@ class ViT(nn.Module):
     
 
 
-
-
 def create_ViT_model():
     weights = ViT_B_16_Weights.DEFAULT
     model = vit_b_16(weights=weights)

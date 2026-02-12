@@ -1,7 +1,21 @@
 [project]
 name = "vision-transformer-pytorch-replication"
-version = "0.1.0"
-dependencies = []
+version = "1.0.0"
+description = "PyTorch implementation of Vision Transformer (ViT) from scratch"
+readme = "readme.md"
+authors = [
+    {name = "Dhiranjit Daimary", email = "Dhiranjitdaimary@gmail.com"}
+]
+dependencies = [
+    "torch",
+    "torchvision",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "tqdm",
+    "tensorboard"
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["src*"]
