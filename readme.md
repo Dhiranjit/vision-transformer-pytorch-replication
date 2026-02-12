@@ -31,13 +31,13 @@ To provide a meaningful performance baseline, the fine-tuned ViT model is compar
 
 ### High-Level Architecture
 
-<img src="../images/architecture.png" alt="ViT Architecture" width="850">
+<img src="./images/architecture.png" alt="ViT Architecture" width="850">
 
 ---
 
 ### Transformer Layers and Equations
 
-<img src="../images/equations.png" alt="ViT Layers and Equations" width="850">
+<img src="./images/equations.png" alt="ViT Layers and Equations" width="850">
 
 ---
 
@@ -68,3 +68,7 @@ The following components were implemented **from scratch** to ensure a deep unde
 
 **Note:**  
 The **Multi-Head Self-Attention (MSA)** operation internally uses the built-in PyTorch attention layer, while the surrounding transformer structure and data flow are implemented manually.
+
+### Results summary
+
+**\_** ||||| **\_\_**
