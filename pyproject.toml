@@ -1,0 +1,7 @@
+[project]
+name = "vision-transformer-pytorch-replication"
+version = "0.1.0"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]

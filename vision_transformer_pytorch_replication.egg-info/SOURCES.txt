@@ -1,0 +1,14 @@
+pyproject.toml
+src/__init__.py
+src/data.py
+src/model.py
+src/utils.py
+torch_utils/__init__.py
+torch_utils/data.py
+torch_utils/engine.py
+torch_utils/model.py
+torch_utils/utils.py
+vision_transformer_pytorch_replication.egg-info/PKG-INFO
+vision_transformer_pytorch_replication.egg-info/SOURCES.txt
+vision_transformer_pytorch_replication.egg-info/dependency_links.txt
+vision_transformer_pytorch_replication.egg-info/top_level.txt
